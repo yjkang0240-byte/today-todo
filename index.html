@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Today — 기획 대시보드</title>
+<style>
+:root{
+  --bg:#0e1015;--card:#161a22;--card2:#1b2029;--fg:#e8eaf0;--mut:#98a2b3;
+  --acc:#5b9dff;--acc2:#7c5cff;--ok:#3ecf8e;--warn:#ffb454;--danger:#ff6b6b;
+  --line:#262c38;--chip:#1f2632;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 70% -10%,#182033 0,var(--bg) 55%);color:var(--fg);
+  font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif}
+a{color:var(--acc);text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 20px 80px}
+header.hero{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.hero .eyebrow{color:var(--acc);font-weight:600;letter-spacing:.04em;font-size:.8rem;text-transform:uppercase}
+.hero h1{margin:.1em 0;font-size:2rem}
+.hero p{color:var(--mut);margin:0;max-width:60ch}
+.hero .chips{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.8rem;color:#cfd6e2}
+.chip b{color:#fff}
+section{margin-top:34px}
+.sec-title{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+.sec-title h2{font-size:1.15rem;margin:0}
+.sec-title span{color:var(--mut);font-size:.82rem}
+.grid{display:grid;gap:14px}
+.stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.stat{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:16px;padding:18px}
+.stat .num{font-size:2rem;font-weight:700;line-height:1}
+.stat .lbl{color:var(--mut);font-size:.82rem;margin-top:6px}
+.stat .num.acc{color:var(--acc)}.stat .num.ok{color:var(--ok)}.stat .num.warn{color:var(--warn)}.stat .num.v2{color:var(--acc2)}
+.cards2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.persona{position:relative;overflow:hidden}
+.persona::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--acc)}
+.persona.contrast::before{background:var(--acc2)}
+.persona .who{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.persona .ava{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:1.3rem;background:#222a38}
+.persona h3{margin:0;font-size:1.05rem}
+.persona .role{color:var(--mut);font-size:.82rem}
+.tag{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:999px;margin-top:6px}
+.tag.main{background:rgba(91,157,255,.15);color:#9cc2ff;border:1px solid rgba(91,157,255,.3)}
+.tag.contrast{background:rgba(124,92,255,.15);color:#bca8ff;border:1px solid rgba(124,92,255,.3)}
+.persona ul{margin:12px 0 0;padding-left:18px}
+.persona li{margin:4px 0;font-size:.9rem}
+.persona .goals li::marker{content:"🎯 "}
+.persona .pains li::marker{content:"⚡ "}
+.persona h4{margin:14px 0 4px;font-size:.8rem;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.principles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.pr{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:flex-start}
+.pr .id{flex:0 0 auto;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-weight:700;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-size:.9rem}
+.pr .body strong{display:block;font-size:.92rem;margin-bottom:2px}
+.pr .body small{color:var(--mut);font-size:.78rem}
+.feat{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.frow{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.frow .fid{color:var(--acc);font-weight:700;font-size:.82rem;flex:0 0 auto}
+.frow small{color:var(--mut);display:block;font-size:.8rem}
+.scope{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.scope .card h3{margin:0 0 10px;font-size:.95rem}
+.scope ul{margin:0;padding-left:2px;list-style:none}
+.scope li{margin:6px 0;font-size:.88rem;padding-left:24px;position:relative}
+.scope .in li::before{content:"✅";position:absolute;left:0}
+.scope .out li::before{content:"⛔";position:absolute;left:0}
+.scope .v2 li::before{content:"🔮";position:absolute;left:0}
+.dod{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.progress{height:12px;background:#0c0f15;border-radius:999px;overflow:hidden;margin:6px 0 4px;border:1px solid var(--line)}
+.progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--acc));transition:width .35s ease}
+.pmeta{display:flex;justify-content:space-between;font-size:.82rem;color:var(--mut);margin-bottom:14px}
+.dod label{display:flex;gap:10px;align-items:flex-start;padding:8px 6px;border-radius:8px;cursor:pointer;font-size:.92rem}
+.dod label:hover{background:var(--card2)}
+.dod input{margin-top:3px;transform:scale(1.2);accent-color:var(--ok)}
+.dod input:checked + span{color:var(--mut);text-decoration:line-through}
+footer{margin-top:40px;color:var(--mut);font-size:.8rem;text-align:center}
+.decision{background:linear-gradient(135deg,rgba(91,157,255,.1),rgba(124,92,255,.08));border:1px solid var(--line);
+  border-radius:16px;padding:18px 20px;margin-top:14px}
+.decision b{color:#cfe0ff}
+.launch{display:inline-block;margin-top:16px;padding:14px 22px;border-radius:14px;font-weight:700;font-size:.95rem;
+  color:#fff;background:linear-gradient(135deg,var(--acc),var(--acc2));border:1px solid rgba(255,255,255,.15);
+  box-shadow:0 8px 24px rgba(91,157,255,.25)}
+.launch:hover{filter:brightness(1.08)}
+.launch:active{transform:translateY(1px)}
+
+/* ---- 라이브 투두 위젯 ---- */
+.app-card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:20px;padding:22px;max-width:560px}
+.app-head{display:flex;align-items:baseline;justify-content:space-between;margin:2px 2px 14px}
+.app-head .d{color:var(--mut);font-size:.82rem}
+.app-head .c{color:var(--acc);font-size:.82rem;font-weight:700}
+.add{display:flex;gap:8px;margin-bottom:14px}
+.add input{flex:1;min-height:50px;padding:0 15px;font-size:1.02rem;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:13px;outline:none}
+.add input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(91,157,255,.18)}
+.add button{min-width:50px;min-height:50px;font-size:1.35rem;border:none;border-radius:13px;cursor:pointer;background:var(--acc);color:#fff;font-weight:700}
+.add button:active{transform:scale(.96)}
+.tlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.tlist li{display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:9px 12px;min-height:54px}
+.tlist .check{flex:0 0 auto;width:28px;height:28px;border-radius:50%;border:2px solid var(--line);background:transparent;cursor:pointer;display:grid;place-items:center;padding:0}
+.tlist .check:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.tlist li.done .check{background:var(--ok);border-color:var(--ok)}
+.tlist .check svg{width:15px;height:15px;stroke:#0e1015;stroke-width:3;fill:none;opacity:0;transition:opacity .15s}
+.tlist li.done .check svg{opacity:1}
+.tlist .t{flex:1;font-size:1rem;word-break:break-word}
+.tlist li.done .t{color:#5b6472;text-decoration:line-through}
+.tlist .del{flex:0 0 auto;width:38px;height:38px;border:none;background:transparent;color:var(--mut);font-size:1.15rem;border-radius:9px;cursor:pointer}
+.tlist .del:hover{color:var(--danger);background:rgba(255,107,107,.1)}
+.tempty{text-align:center;color:var(--mut);padding:34px 16px}
+.tempty .big{font-size:2rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">기획 대시보드</div>
+    <h1>📋 Today — 오늘 할 일 미니멀 체크</h1>
+    <p>오늘 해야 할 일만 빠르게 적고 체크하는 미니멀 투두. <b>적는 데 3초, 체크하는 데 1초.</b></p>
+    <div class="chips">
+      <span class="chip"><b>React</b> + TypeScript</span>
+      <span class="chip"><b>localStorage</b> 저장</span>
+      <span class="chip">모바일 우선 반응형</span>
+      <span class="chip">로그인 없는 정적 SPA</span>
+      <span class="chip">시간 예산: 여러 날</span>
+    </div>
+    <a href="#live" class="launch">▶ 아래에서 바로 써보기 — 추가·완료·삭제·자동저장·자정 이월 동작</a>
+  </header>
+
+  <!-- STATS -->
+  <section>
+    <div class="grid stats">
+      <div class="stat"><div class="num acc">5</div><div class="lbl">핵심 기능 (F1–F5)</div></div>
+      <div class="stat"><div class="num">2</div><div class="lbl">페르소나 (주/대조)</div></div>
+      <div class="stat"><div class="num">8</div><div class="lbl">사용 시나리오 (S1–S8)</div></div>
+      <div class="stat"><div class="num ok">7</div><div class="lbl">설계 원칙 (P1–P7)</div></div>
+      <div class="stat"><div class="num warn">4</div><div class="lbl">이월 규칙 (R1–R4)</div></div>
+      <div class="stat"><div class="num v2">4</div><div class="lbl">v2 로드맵 항목</div></div>
+    </div>
+  </section>
+
+  <!-- LIVE APP -->
+  <section id="live">
+    <div class="sec-title"><h2>▶ 실제 앱 (동작)</h2><span>여기서 바로 추가·완료·삭제 · 새로고침해도 유지 · 자정 자동 이월</span></div>
+    <div class="app-card">
+      <div class="app-head">
+        <div><strong>오늘 할 일</strong> <span class="d" id="tvDate"></span></div>
+        <div class="c" id="tvCount"></div>
+      </div>
+      <form class="add" id="tvForm" autocomplete="off">
+        <input id="tvInput" type="text" placeholder="할 일을 적고 Enter" aria-label="할 일 추가" maxlength="200">
+        <button type="submit" aria-label="추가">＋</button>
+      </form>
+      <ul class="tlist" id="tvList" aria-live="polite"></ul>
+      <div class="tempty" id="tvEmpty" hidden>
+        <div class="big">📝</div>
+        <p>오늘은 아직 아무것도 없어요. 위에 첫 할 일을 적어보세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERSONAS -->
+  <section>
+    <div class="sec-title"><h2>👥 페르소나</h2><span>미니멀리즘(주) ↔ 꼼꼼한 관리(대조)의 긴장</span></div>
+    <div class="grid cards2">
+      <div class="card persona">
+        <div class="who"><div class="ava">🧑‍💻</div>
+          <div><h3>김도현 · 33세</h3><div class="role">IT 회사 마케터 · 스마트폰 위주</div>
+          <span class="tag main">주 페르소나 — 최적화 대상</span></div></div>
+        <h4>Goals</h4>
+        <ul class="goals"><li>아침에 오늘 할 일을 3초 만에 적기</li><li>낮에 "지금 뭐 하지?"를 한눈에</li><li>체크하는 손맛으로 진도 느끼기</li></ul>
+        <h4>Frustrations</h4>
+        <ul class="pains"><li>설정이 많아 적기도 전에 지침</li><li>과한 알림이 잔소리처럼 느껴짐</li><li>어제 못 한 일이 쌓이면 열기 싫음</li></ul>
+      </div>
+      <div class="card persona contrast">
+        <div class="who"><div class="ava">👩‍💼</div>
+          <div><h3>박서연 · 41세</h3><div class="role">PM(여러 프로젝트) · 데스크톱 위주</div>
+          <span class="tag contrast">대조 페르소나 — v2 근거</span></div></div>
+        <h4>Goals</h4>
+        <ul class="goals"><li>분류·우선순위로 체계적 관리</li><li>완료 이력·과거 기록 확인</li><li>반복 업무 자동 생성</li></ul>
+        <h4>Frustrations</h4>
+        <ul class="pains"><li>"제목만"이라 정보가 부족</li><li>순서를 못 바꿔 답답함</li><li>오늘만 보이고 과거가 사라져 불안</li></ul>
+      </div>
+    </div>
+    <div class="decision">🧭 <b>핵심 판단 기준</b> — 새 기능을 넣을지 고민될 때: <b>"김도현이 아침 지하철에서 이걸 반길까?"</b> 박서연의 니즈(분류·이력·반복·정렬)는 의도적으로 v2로 미룬다.</div>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section>
+    <div class="sec-title"><h2>🎯 설계 원칙</h2><span>시나리오 S1–S8에서 도출</span></div>
+    <div class="grid principles">
+      <div class="pr"><div class="id">P1</div><div class="body"><strong>즉시 입력 가능</strong><small>첫 화면 = 오늘 목록 + 입력창, 탭/메뉴 없음</small></div></div>
+      <div class="pr"><div class="id">P2</div><div class="body"><strong>연속 입력 흐름</strong><small>추가 후 포커스 유지, Enter로 계속</small></div></div>
+      <div class="pr"><div class="id">P3</div><div class="body"><strong>한 손·흔들림 대응</strong><small>큰 입력창, 44px+ 터치 타깃</small></div></div>
+      <div class="pr"><div class="id">P4</div><div class="body"><strong>한 번의 탭 완료</strong><small>토글 방식, 취소선은 자리에 남김</small></div></div>
+      <div class="pr"><div class="id">P5</div><div class="body"><strong>무음 자동 이월</strong><small>압박 표시 없이 조용히 오늘 목록에</small></div></div>
+      <div class="pr"><div class="id">P6</div><div class="body"><strong>오늘에만 집중</strong><small>과거·분류·반복 배제, 정보는 제목만</small></div></div>
+      <div class="pr"><div class="id">P7</div><div class="body"><strong>빈 상태는 시작점</strong><small>안내 + 입력 포커스로 첫 할 일 유도</small></div></div>
+    </div>
+  </section>
+
+  <!-- FEATURES + RULES -->
+  <section>
+    <div class="sec-title"><h2>⚙️ 핵심 기능 &amp; 이월 규칙</h2><span>CRUD + 자정 롤오버</span></div>
+    <div class="grid feat">
+      <div class="frow"><span class="fid">F1</span><div>할 일 추가<small>제목 입력 → Enter → 목록 맨 아래</small></div></div>
+      <div class="frow"><span class="fid">F2</span><div>완료 토글<small>탭 → done 토글, 취소선·자리 유지</small></div></div>
+      <div class="frow"><span class="fid">F3</span><div>할 일 삭제<small>삭제 버튼/스와이프로 제거</small></div></div>
+      <div class="frow"><span class="fid">F4</span><div>목록 표시<small>오늘 날짜를 추가 순서대로</small></div></div>
+      <div class="frow"><span class="fid">F5</span><div>자동 저장<small>모든 변경 즉시 localStorage 반영</small></div></div>
+      <div class="frow"><span class="fid">R1</span><div>오늘 계산<small>앱 열 때 로컬 타임존 기준</small></div></div>
+      <div class="frow"><span class="fid">R2</span><div>미완료 이월<small>지난 미완료 항목의 date를 오늘로</small></div></div>
+      <div class="frow"><span class="fid">R3</span><div>완료는 제외<small>done=true는 이월하지 않음</small></div></div>
+      <div class="frow"><span class="fid">R4</span><div>오늘만 표시<small>화면엔 항상 오늘 항목만</small></div></div>
+    </div>
+  </section>
+
+  <!-- SCOPE -->
+  <section>
+    <div class="sec-title"><h2>🧱 범위</h2><span>MVP를 좁혀 미니멀 유지</span></div>
+    <div class="grid scope">
+      <div class="card"><h3>포함 (MVP)</h3><ul class="in">
+        <li>제목 하나로 추가/완료/삭제</li><li>완료 취소선 · 자리 유지</li><li>자동 저장 & 새로고침 유지</li><li>자정 자동 이월</li><li>빈 상태 안내</li></ul></div>
+      <div class="card"><h3>제외 (Out of Scope)</h3><ul class="out">
+        <li>메모·우선순위·태그·마감시간</li><li>계정·로그인·클라우드 동기화</li><li>협업·공유</li><li>알림/푸시</li></ul></div>
+      <div class="card"><h3>v2 로드맵</h3><ul class="v2">
+        <li>반복 할 일(자동 생성)</li><li>드래그 순서 변경</li><li>날짜별 히스토리(달력)</li><li>분류·태그·필터</li></ul></div>
+    </div>
+  </section>
+
+  <!-- DOD -->
+  <section>
+    <div class="sec-title"><h2>✅ 완료 기준 (Definition of Done)</h2><span>체크하면 진행률이 갱신됩니다</span></div>
+    <div class="dod">
+      <div class="pmeta"><span id="pcount">0 / 7 완료</span><span id="ppct">0%</span></div>
+      <div class="progress"><i id="pbar"></i></div>
+      <div id="dodlist">
+        <label><input type="checkbox"><span>할 일을 추가/완료/삭제할 수 있다</span></label>
+        <label><input type="checkbox"><span>완료한 할 일은 취소선으로 표시되고 자리에 남는다</span></label>
+        <label><input type="checkbox"><span>새로고침해도 데이터가 유지된다</span></label>
+        <label><input type="checkbox"><span>자정을 넘긴 뒤 열면 미완료 할 일이 오늘로 이월된다</span></label>
+        <label><input type="checkbox"><span>모바일 화면에서 한 손으로 조작이 편하다</span></label>
+        <label><input type="checkbox"><span>한글 입력 시 Enter로 중복 추가되지 않는다</span></label>
+        <label><input type="checkbox"><span>빈 상태 안내가 보인다</span></label>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    출처 문서: 01-requirements.md · 02-personas.md · 03-scenarios.md ·
+    <a href="./01-requirements.md">요구사항</a> ·
+    <a href="./02-personas.md">페르소나</a> ·
+    <a href="./03-scenarios.md">시나리오</a><br>
+    로컬 전용 대시보드 · 외부에 게시되지 않았습니다.
+  </footer>
+</div>
+
+<script>
+  const boxes = [...document.querySelectorAll('#dodlist input')];
+  const bar = document.getElementById('pbar');
+  const pcount = document.getElementById('pcount');
+  const ppct = document.getElementById('ppct');
+  function upd(){
+    const done = boxes.filter(b=>b.checked).length;
+    const pct = Math.round(done/boxes.length*100);
+    bar.style.width = pct+'%';
+    pcount.textContent = done+' / '+boxes.length+' 완료';
+    ppct.textContent = pct+'%';
+  }
+  boxes.forEach(b=>b.addEventListener('change',upd));
+  upd();
+
+  // ===== 라이브 투두 위젯 (요구사항 F1–F5 / R1–R4) =====
+  (function(){
+    "use strict";
+    var KEY="today.todos.v1", todos=[];
+    var list=document.getElementById('tvList'), empty=document.getElementById('tvEmpty'),
+        count=document.getElementById('tvCount'), input=document.getElementById('tvInput');
+
+    function todayStr(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+    function prettyDate(){var d=new Date(),wd=["일","월","화","수","목","금","토"][d.getDay()];return (d.getMonth()+1)+"월 "+d.getDate()+"일 ("+wd+")";}
+
+    function loadData(){try{var r=localStorage.getItem(KEY);todos=r?JSON.parse(r):[];if(!Array.isArray(todos))todos=[];}catch(e){todos=[];}}
+    function saveData(){try{localStorage.setItem(KEY,JSON.stringify(todos));}catch(e){}}
+
+    function rollover(){ // R1–R3: 미완료만 오늘로, 무음
+      var t=todayStr(),ch=false;
+      todos.forEach(function(td){if(!td.done&&td.date!==t){td.date=t;ch=true;}});
+      if(ch)saveData();
+    }
+    var _n=0;
+    function uid(){return Date.now().toString(36)+Math.floor(performance.now()).toString(36)+(++_n);}
+    function add(title){title=title.trim();if(!title)return;
+      todos.push({id:uid(),title:title,done:false,createdAt:Date.now(),date:todayStr()});saveData();draw();}
+    function toggle(id){var t=todos.find(function(x){return x.id===id;});if(t){t.done=!t.done;saveData();draw();}}
+    function remove(id){todos=todos.filter(function(x){return x.id!==id;});saveData();draw();}
+
+    function draw(){ // R4: 오늘 항목만, 추가 순서
+      var t=todayStr();
+      var day=todos.filter(function(x){return x.date===t;}).sort(function(a,b){return a.createdAt-b.createdAt;});
+      list.innerHTML="";
+      day.forEach(function(td){
+        var li=document.createElement('li'); if(td.done)li.className="done";
+        var b=document.createElement('button'); b.className="check"; b.setAttribute("role","checkbox");
+        b.setAttribute("aria-checked",td.done?"true":"false"); b.setAttribute("aria-label",(td.done?"완료 취소: ":"완료: ")+td.title);
+        b.innerHTML='<svg viewBox="0 0 24 24"><polyline points="4,12 10,18 20,6"/></svg>';
+        b.addEventListener("click",function(){toggle(td.id);});
+        var s=document.createElement('span'); s.className="t"; s.textContent=td.title;
+        var d=document.createElement('button'); d.className="del"; d.setAttribute("aria-label","삭제: "+td.title); d.textContent="✕";
+        d.addEventListener("click",function(){remove(td.id);});
+        li.appendChild(b); li.appendChild(s); li.appendChild(d); list.appendChild(li);
+      });
+      var remain=day.filter(function(x){return !x.done;}).length, isEmpty=day.length===0;
+      empty.hidden=!isEmpty; list.hidden=isEmpty;
+      count.textContent=isEmpty?"":(remain===0?"다 했어요 🎉":"남은 "+remain+"개");
+    }
+
+    var composing=false;
+    input.addEventListener("compositionstart",function(){composing=true;});
+    input.addEventListener("compositionend",function(){composing=false;});
+    document.getElementById('tvForm').addEventListener("submit",function(e){
+      e.preventDefault(); if(composing)return;      // IME 조합 확정 Enter 무시
+      add(input.value); input.value=""; input.focus();
+    });
+
+    document.getElementById('tvDate').textContent=prettyDate();
+    loadData(); rollover(); draw();
+    document.addEventListener("visibilitychange",function(){if(!document.hidden){rollover();draw();}});
+  })();
+</script>
+</body>
+</html>
