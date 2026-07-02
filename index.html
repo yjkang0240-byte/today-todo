@@ -131,6 +131,7 @@ footer{margin-top:40px;color:var(--mut);font-size:.8rem;text-align:center}
     if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}
     document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <button class="theme-toggle" id="themeToggle" aria-label="라이트/다크 테마 전환" title="라이트/다크 전환">🌙</button>
@@ -307,34 +308,42 @@ footer{margin-top:40px;color:var(--mut);font-size:.8rem;text-align:center}
     syncIcon();
   })();
 
-  // ===== 라이브 투두 위젯 (요구사항 F1–F5 / R1–R4) =====
+  // ===== 라이브 투두 위젯 (요구사항 F1–F5 / R1–R4) — Supabase 클라우드 저장 =====
   (function(){
     "use strict";
-    var KEY="today.todos.v1", todos=[];
+    var SUPABASE_URL="https://dbzrzvmbqakdykmzhowe.supabase.co";
+    var SUPABASE_KEY="sb_publishable_mNsYyS7r68tQR4jt3eHdFQ_noyGoqVq";
+    var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    var todos=[], busy=false;
     var list=document.getElementById('tvList'), empty=document.getElementById('tvEmpty'),
         count=document.getElementById('tvCount'), input=document.getElementById('tvInput');
 
     function todayStr(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
     function prettyDate(){var d=new Date(),wd=["일","월","화","수","목","금","토"][d.getDay()];return (d.getMonth()+1)+"월 "+d.getDate()+"일 ("+wd+")";}
 
-    function loadData(){try{var r=localStorage.getItem(KEY);todos=r?JSON.parse(r):[];if(!Array.isArray(todos))todos=[];}catch(e){todos=[];}}
-    function saveData(){try{localStorage.setItem(KEY,JSON.stringify(todos));}catch(e){}}
-
-    function rollover(){ // R1–R3: 미완료만 오늘로, 무음
-      var t=todayStr(),ch=false;
-      todos.forEach(function(td){if(!td.done&&td.date!==t){td.date=t;ch=true;}});
-      if(ch)saveData();
+    // 클라우드에서 전체 목록 로드 (created_at 순)
+    function loadData(){
+      return sb.from('todos').select('id,title,done,created_at,todo_date').order('created_at',{ascending:true})
+        .then(function(res){ todos=(res&&res.data)?res.data:[]; if(res&&res.error)console.error(res.error); });
     }
-    var _n=0;
-    function uid(){return Date.now().toString(36)+Math.floor(performance.now()).toString(36)+(++_n);}
-    function add(title){title=title.trim();if(!title)return;
-      todos.push({id:uid(),title:title,done:false,createdAt:Date.now(),date:todayStr()});saveData();draw();}
-    function toggle(id){var t=todos.find(function(x){return x.id===id;});if(t){t.done=!t.done;saveData();draw();}}
-    function remove(id){todos=todos.filter(function(x){return x.id!==id;});saveData();draw();}
+    function refresh(){ return loadData().then(draw); }
 
-    function draw(){ // R4: 오늘 항목만, 추가 순서
+    // R1–R3: 지난 미완료 항목의 날짜를 오늘로, 무음
+    function rollover(){
       var t=todayStr();
-      var day=todos.filter(function(x){return x.date===t;}).sort(function(a,b){return a.createdAt-b.createdAt;});
+      return sb.from('todos').update({todo_date:t}).eq('done',false).lt('todo_date',t).then(function(){});
+    }
+
+    function add(title){title=title.trim();if(!title||busy)return;busy=true;
+      sb.from('todos').insert({title:title,done:false,todo_date:todayStr()}).then(refresh).then(function(){busy=false;});}
+    function toggle(id){var t=todos.find(function(x){return x.id===id;});if(!t||busy)return;busy=true;
+      sb.from('todos').update({done:!t.done}).eq('id',id).then(refresh).then(function(){busy=false;});}
+    function remove(id){if(busy)return;busy=true;
+      sb.from('todos').delete().eq('id',id).then(refresh).then(function(){busy=false;});}
+
+    function draw(){ // R4: 오늘 항목만, 추가 순서 (쿼리에서 이미 created_at 정렬)
+      var t=todayStr();
+      var day=todos.filter(function(x){return x.todo_date===t;});
       list.innerHTML="";
       day.forEach(function(td){
         var li=document.createElement('li'); if(td.done)li.className="done";
@@ -361,8 +370,8 @@ footer{margin-top:40px;color:var(--mut);font-size:.8rem;text-align:center}
     });
 
     document.getElementById('tvDate').textContent=prettyDate();
-    loadData(); rollover(); draw();
-    document.addEventListener("visibilitychange",function(){if(!document.hidden){rollover();draw();}});
+    rollover().then(refresh);
+    document.addEventListener("visibilitychange",function(){if(!document.hidden){rollover().then(refresh);}});
   })();
 </script>
 </body>
