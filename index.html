@@ -138,34 +138,18 @@ footer{margin-top:40px;color:var(--mut);font-size:.8rem;text-align:center}
 <div class="wrap">
 
   <header class="hero">
-    <div class="eyebrow">기획 대시보드</div>
-    <h1>📋 Today — 오늘 할 일 미니멀 체크</h1>
+    <h1>📋 Today — 오늘 할 일</h1>
     <p>오늘 해야 할 일만 빠르게 적고 체크하는 미니멀 투두. <b>적는 데 3초, 체크하는 데 1초.</b></p>
     <div class="chips">
-      <span class="chip"><b>React</b> + TypeScript</span>
-      <span class="chip"><b>localStorage</b> 저장</span>
-      <span class="chip">모바일 우선 반응형</span>
-      <span class="chip">로그인 없는 정적 SPA</span>
-      <span class="chip">시간 예산: 여러 날</span>
+      <span class="chip">☁️ 클라우드 저장</span>
+      <span class="chip">📱 모바일 우선</span>
+      <span class="chip">🌙 다크/라이트</span>
+      <span class="chip">🌅 자정 자동 이월</span>
     </div>
-    <a href="#live" class="launch">▶ 아래에서 바로 써보기 — 추가·완료·삭제·자동저장·자정 이월 동작</a>
   </header>
-
-  <!-- STATS -->
-  <section>
-    <div class="grid stats">
-      <div class="stat"><div class="num acc">5</div><div class="lbl">핵심 기능 (F1–F5)</div></div>
-      <div class="stat"><div class="num">2</div><div class="lbl">페르소나 (주/대조)</div></div>
-      <div class="stat"><div class="num">8</div><div class="lbl">사용 시나리오 (S1–S8)</div></div>
-      <div class="stat"><div class="num ok">7</div><div class="lbl">설계 원칙 (P1–P7)</div></div>
-      <div class="stat"><div class="num warn">4</div><div class="lbl">이월 규칙 (R1–R4)</div></div>
-      <div class="stat"><div class="num v2">4</div><div class="lbl">v2 로드맵 항목</div></div>
-    </div>
-  </section>
 
   <!-- LIVE APP -->
   <section id="live">
-    <div class="sec-title"><h2>▶ 실제 앱 (동작)</h2><span>여기서 바로 추가·완료·삭제 · 새로고침해도 유지 · 자정 자동 이월</span></div>
     <div class="app-card">
       <div class="app-head">
         <div><strong>오늘 할 일</strong> <span class="d" id="tvDate"></span></div>
@@ -183,117 +167,12 @@ footer{margin-top:40px;color:var(--mut);font-size:.8rem;text-align:center}
     </div>
   </section>
 
-  <!-- PERSONAS -->
-  <section>
-    <div class="sec-title"><h2>👥 페르소나</h2><span>미니멀리즘(주) ↔ 꼼꼼한 관리(대조)의 긴장</span></div>
-    <div class="grid cards2">
-      <div class="card persona">
-        <div class="who"><div class="ava">🧑‍💻</div>
-          <div><h3>김도현 · 33세</h3><div class="role">IT 회사 마케터 · 스마트폰 위주</div>
-          <span class="tag main">주 페르소나 — 최적화 대상</span></div></div>
-        <h4>Goals</h4>
-        <ul class="goals"><li>아침에 오늘 할 일을 3초 만에 적기</li><li>낮에 "지금 뭐 하지?"를 한눈에</li><li>체크하는 손맛으로 진도 느끼기</li></ul>
-        <h4>Frustrations</h4>
-        <ul class="pains"><li>설정이 많아 적기도 전에 지침</li><li>과한 알림이 잔소리처럼 느껴짐</li><li>어제 못 한 일이 쌓이면 열기 싫음</li></ul>
-      </div>
-      <div class="card persona contrast">
-        <div class="who"><div class="ava">👩‍💼</div>
-          <div><h3>박서연 · 41세</h3><div class="role">PM(여러 프로젝트) · 데스크톱 위주</div>
-          <span class="tag contrast">대조 페르소나 — v2 근거</span></div></div>
-        <h4>Goals</h4>
-        <ul class="goals"><li>분류·우선순위로 체계적 관리</li><li>완료 이력·과거 기록 확인</li><li>반복 업무 자동 생성</li></ul>
-        <h4>Frustrations</h4>
-        <ul class="pains"><li>"제목만"이라 정보가 부족</li><li>순서를 못 바꿔 답답함</li><li>오늘만 보이고 과거가 사라져 불안</li></ul>
-      </div>
-    </div>
-    <div class="decision">🧭 <b>핵심 판단 기준</b> — 새 기능을 넣을지 고민될 때: <b>"김도현이 아침 지하철에서 이걸 반길까?"</b> 박서연의 니즈(분류·이력·반복·정렬)는 의도적으로 v2로 미룬다.</div>
-  </section>
-
-  <!-- PRINCIPLES -->
-  <section>
-    <div class="sec-title"><h2>🎯 설계 원칙</h2><span>시나리오 S1–S8에서 도출</span></div>
-    <div class="grid principles">
-      <div class="pr"><div class="id">P1</div><div class="body"><strong>즉시 입력 가능</strong><small>첫 화면 = 오늘 목록 + 입력창, 탭/메뉴 없음</small></div></div>
-      <div class="pr"><div class="id">P2</div><div class="body"><strong>연속 입력 흐름</strong><small>추가 후 포커스 유지, Enter로 계속</small></div></div>
-      <div class="pr"><div class="id">P3</div><div class="body"><strong>한 손·흔들림 대응</strong><small>큰 입력창, 44px+ 터치 타깃</small></div></div>
-      <div class="pr"><div class="id">P4</div><div class="body"><strong>한 번의 탭 완료</strong><small>토글 방식, 취소선은 자리에 남김</small></div></div>
-      <div class="pr"><div class="id">P5</div><div class="body"><strong>무음 자동 이월</strong><small>압박 표시 없이 조용히 오늘 목록에</small></div></div>
-      <div class="pr"><div class="id">P6</div><div class="body"><strong>오늘에만 집중</strong><small>과거·분류·반복 배제, 정보는 제목만</small></div></div>
-      <div class="pr"><div class="id">P7</div><div class="body"><strong>빈 상태는 시작점</strong><small>안내 + 입력 포커스로 첫 할 일 유도</small></div></div>
-    </div>
-  </section>
-
-  <!-- FEATURES + RULES -->
-  <section>
-    <div class="sec-title"><h2>⚙️ 핵심 기능 &amp; 이월 규칙</h2><span>CRUD + 자정 롤오버</span></div>
-    <div class="grid feat">
-      <div class="frow"><span class="fid">F1</span><div>할 일 추가<small>제목 입력 → Enter → 목록 맨 아래</small></div></div>
-      <div class="frow"><span class="fid">F2</span><div>완료 토글<small>탭 → done 토글, 취소선·자리 유지</small></div></div>
-      <div class="frow"><span class="fid">F3</span><div>할 일 삭제<small>삭제 버튼/스와이프로 제거</small></div></div>
-      <div class="frow"><span class="fid">F4</span><div>목록 표시<small>오늘 날짜를 추가 순서대로</small></div></div>
-      <div class="frow"><span class="fid">F5</span><div>자동 저장<small>모든 변경 즉시 localStorage 반영</small></div></div>
-      <div class="frow"><span class="fid">R1</span><div>오늘 계산<small>앱 열 때 로컬 타임존 기준</small></div></div>
-      <div class="frow"><span class="fid">R2</span><div>미완료 이월<small>지난 미완료 항목의 date를 오늘로</small></div></div>
-      <div class="frow"><span class="fid">R3</span><div>완료는 제외<small>done=true는 이월하지 않음</small></div></div>
-      <div class="frow"><span class="fid">R4</span><div>오늘만 표시<small>화면엔 항상 오늘 항목만</small></div></div>
-    </div>
-  </section>
-
-  <!-- SCOPE -->
-  <section>
-    <div class="sec-title"><h2>🧱 범위</h2><span>MVP를 좁혀 미니멀 유지</span></div>
-    <div class="grid scope">
-      <div class="card"><h3>포함 (MVP)</h3><ul class="in">
-        <li>제목 하나로 추가/완료/삭제</li><li>완료 취소선 · 자리 유지</li><li>자동 저장 & 새로고침 유지</li><li>자정 자동 이월</li><li>빈 상태 안내</li></ul></div>
-      <div class="card"><h3>제외 (Out of Scope)</h3><ul class="out">
-        <li>메모·우선순위·태그·마감시간</li><li>계정·로그인·클라우드 동기화</li><li>협업·공유</li><li>알림/푸시</li></ul></div>
-      <div class="card"><h3>v2 로드맵</h3><ul class="v2">
-        <li>반복 할 일(자동 생성)</li><li>드래그 순서 변경</li><li>날짜별 히스토리(달력)</li><li>분류·태그·필터</li></ul></div>
-    </div>
-  </section>
-
-  <!-- DOD -->
-  <section>
-    <div class="sec-title"><h2>✅ 완료 기준 (Definition of Done)</h2><span>체크하면 진행률이 갱신됩니다</span></div>
-    <div class="dod">
-      <div class="pmeta"><span id="pcount">0 / 7 완료</span><span id="ppct">0%</span></div>
-      <div class="progress"><i id="pbar"></i></div>
-      <div id="dodlist">
-        <label><input type="checkbox"><span>할 일을 추가/완료/삭제할 수 있다</span></label>
-        <label><input type="checkbox"><span>완료한 할 일은 취소선으로 표시되고 자리에 남는다</span></label>
-        <label><input type="checkbox"><span>새로고침해도 데이터가 유지된다</span></label>
-        <label><input type="checkbox"><span>자정을 넘긴 뒤 열면 미완료 할 일이 오늘로 이월된다</span></label>
-        <label><input type="checkbox"><span>모바일 화면에서 한 손으로 조작이 편하다</span></label>
-        <label><input type="checkbox"><span>한글 입력 시 Enter로 중복 추가되지 않는다</span></label>
-        <label><input type="checkbox"><span>빈 상태 안내가 보인다</span></label>
-      </div>
-    </div>
-  </section>
-
   <footer>
-    출처 문서: 01-requirements.md · 02-personas.md · 03-scenarios.md ·
-    <a href="./01-requirements.md">요구사항</a> ·
-    <a href="./02-personas.md">페르소나</a> ·
-    <a href="./03-scenarios.md">시나리오</a><br>
-    로컬 전용 대시보드 · 외부에 게시되지 않았습니다.
+    Today · 오늘 할 일 미니멀 투두 · 데이터는 Supabase 클라우드에 저장됩니다
   </footer>
 </div>
 
 <script>
-  const boxes = [...document.querySelectorAll('#dodlist input')];
-  const bar = document.getElementById('pbar');
-  const pcount = document.getElementById('pcount');
-  const ppct = document.getElementById('ppct');
-  function upd(){
-    const done = boxes.filter(b=>b.checked).length;
-    const pct = Math.round(done/boxes.length*100);
-    bar.style.width = pct+'%';
-    pcount.textContent = done+' / '+boxes.length+' 완료';
-    ppct.textContent = pct+'%';
-  }
-  boxes.forEach(b=>b.addEventListener('change',upd));
-  upd();
-
   // ===== 테마 토글 (라이트/다크) =====
   (function(){
     var tt=document.getElementById('themeToggle');
